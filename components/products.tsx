@@ -1,37 +1,40 @@
 import Image from "next/image"
 import Link from "next/link"
+import { getProducts } from "@/lib/funcs"
+import { cn } from "@/lib/utils"
 
 type Props = {
-   
+   take?: number
+   category?: string
+   classNamesTitolo?: string
+   classNamesPrezzo?: string
+   classNamesGrid?: string,
+   products?: any
 }
 
-async function getData() {
-   try {
-      const res = await fetch("http://localhost:3550/api/products", { next: { tags: ['products'] } })
-      const data: any[] = await res.json()
-      return data
-   } catch (error) {
-      return []
-   }
-}
-
-export default async function Page({}: Props) {
-   let data = await getData()
-   if (data.length == 0) return (<div>errore</div>)
-   data = data.slice(0, 6)
+export default async function Page({take, category, classNamesPrezzo, classNamesTitolo, classNamesGrid, products}: Props) {
+   let data;
+   if (!products) {
+      data = await getProducts(take, category)
+      if (data.length == 0) return (
+         <div className="xl:px-[100px] px-[50px]">
+            Nessun prodotto trovato
+         </div>
+      )
+   } else {data = products}
    return (
-      <div className="grid grid-cols-3 gap-6 px-[100px]">
+      <div className={cn("grid grid-cols-3 gap-6 px-8 lg:px-[50px] xl:px-[100px]", classNamesGrid)}>
          {
-            data.map((product: any) => {
+            data.map((product:any) => {
                return (
                   <>
-                  <Link href={"/"} key={product.id}>
-                     <div className="relative w-full h-[390px] lg:h-[500px] rounded overflow-hidden">
-                        <Image alt={product.name} src={product.images[0]} fill className="object-cover" />
-                     </div>
-                     <h2 className="font-semibold text-center text-2xl pt-2">{product.name}</h2>
-                     <p className="text-center">{(product.price as number).toFixed(2)}€</p>
-                  </Link>
+                     <Link href={"/shop/"+product.slug} key={product.id}>
+                        <div className="relative w-full aspect-[9/12] shadow-sm rounded overflow-hidden group">
+                           <Image alt={product.name} src={product.images[0]} fill className="object-cover group-hover:scale-105 transition-all duration-200" priority/>
+                        </div>
+                        <h2 className={cn("xl:font-medium text-center lg:text-xl xl:text-2xl pt-2", classNamesTitolo)}>{product.name}</h2>
+                        <p className={cn("text-center xl:font-normal lg:text-base text-sm font-light", classNamesPrezzo)}>{(product.price as number).toFixed(2)}€</p>
+                     </Link>
                   </>
                )
             })

@@ -13,11 +13,11 @@ export default function Page({}: Props) {
    
    const all = ["font-sans", "font-serif", "font-mono"]
 
-   useEffect(() => {
+   /* useEffect(() => {
       setInterval(() => {
          setFont(all[Math.floor(Math.random() * all.length)])
       }, 5000)
-   }, [])
+   }, []) */
 
    return (
       <Link href={"/"} className={cn("font-bold text-2xl", font)} >
