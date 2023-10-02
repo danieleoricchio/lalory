@@ -9,10 +9,11 @@ type Props = {
    classNamesTitolo?: string
    classNamesPrezzo?: string
    classNamesGrid?: string,
+   classNamesImage?: string,
    products?: any
 }
 
-export default async function Page({take, category, classNamesPrezzo, classNamesTitolo, classNamesGrid, products}: Props) {
+export default async function Page({take, category, classNamesPrezzo, classNamesTitolo, classNamesGrid, products, classNamesImage}: Props) {
    let data;
    if (!products) {
       data = await getProducts(take, category)
@@ -29,7 +30,7 @@ export default async function Page({take, category, classNamesPrezzo, classNames
                return (
                   <>
                      <Link href={"/shop/"+product.slug} key={product.id}>
-                        <div className="relative w-full aspect-[9/12] shadow-sm rounded overflow-hidden group">
+                        <div className={cn("relative w-full aspect-[9/12] shadow-sm rounded overflow-hidden group mx-auto", classNamesImage)}>
                            <Image alt={product.name} src={product.images[0]} fill className="object-cover group-hover:scale-105 transition-all duration-200" priority/>
                         </div>
                         <h2 className={cn("xl:font-medium text-center lg:text-xl xl:text-2xl pt-2", classNamesTitolo)}>{product.name}</h2>

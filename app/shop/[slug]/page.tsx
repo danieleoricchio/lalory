@@ -2,6 +2,7 @@ import { getProduct } from "@/lib/funcs"
 import { notFound } from "next/navigation"
 import Immagini from "./immagini"
 import Products from "@/components/products"
+import AggiungiAlCarrello from "./aggiungialcarrello"
 
 type Props = {
    params: {
@@ -23,7 +24,7 @@ export default async function Page({params}: Props) {
             <h1 className="font-bold text-3xl hidden lg:block">{product.name}</h1>
             <p className="mt-4 lg:mt-2 font-semibold text-lg">{(product.price as number).toFixed(2)}€</p>
             <p className="mt-4 lg:mt-2 text-[15px] font-light">{product.description}</p>
-            <button disabled className="disabled:opacity-75 disabled:bg-opacity-75 disabled:cursor-not-allowed bg-primary mt-4 lg:mt-2 text-white lg:p-4 px-4 py-2  rounded font-semibold transition-all duration-300 hover:bg-opacity-75">Aggiungi al carrello</button>
+            <AggiungiAlCarrello slug={params.slug}/> 
          </div>
       </div>
       <div className="px-8 lg:px-0">

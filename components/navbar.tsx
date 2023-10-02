@@ -1,16 +1,23 @@
 "use client"
 
+import { getCartProductsNumber } from "@/lib/funcs"
 import { cn } from "@/lib/utils"
-import { Menu, Search, X } from "lucide-react"
+import { Menu, Search, ShoppingCart, X } from "lucide-react"
 import Link from "next/link"
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
 
 type Props = {
    
 }
 
 export default function Page({}: Props) {
+   //TODO: usare react-query 
+   const [numberProducts, setNumberProducts] = useState(0)
    const uguale = "bg-primary transition-all duration-300"
+
+   async function numero(){
+      setNumberProducts(await getCartProductsNumber())
+   }
 
    useEffect(() => {
       window.addEventListener("scroll", () => {
@@ -34,6 +41,8 @@ export default function Page({}: Props) {
          }
       })
 
+      numero()
+
       return () => {
          window.removeEventListener("scroll", () => {})
       }
@@ -49,10 +58,20 @@ export default function Page({}: Props) {
    return (
       <>
          <nav className="transition-all duration-300 hidden lg:block fixed z-10 w-full" id="nav1">
-            <div className="py-7 text-center bg-white shadow w-2/3 mx-auto text-3xl font-bold transition-all duration-50" id="divhomenav">
+            <div className="relative py-7 text-center bg-white shadow w-2/3 mx-auto text-3xl font-bold transition-all duration-50" id="divhomenav">
                <Link href={"/"} id="homenav">
                   Home
                </Link>
+               <div className="absolute top-8 right-8">
+                  <Link href={"/cart"} className="flex gap-2 items-center">
+                     <ShoppingCart className="text-3xl"/>
+                     {
+                        /* numberProducts < 1 ? null : (
+                           <span className="text-xl">{numberProducts}</span>
+                        ) */
+                     }
+                  </Link>
+               </div>
             </div>
             <div className="flex gap-6 justify-center items-center text-white shadow w-2/3 mx-auto font-semibold p-4 rounded-b-md text-lg bg-primary">
                <Link href={"/shop"} className="hover:text-white/80 transition-all duration-200  ">
@@ -89,6 +108,9 @@ export default function Page({}: Props) {
                </Link>
                <Link href={"/chi-siamo"} className="font-semibold text-white text-lg" onClick={e=>toggleNavPhone()}>
                   Chi siamo
+               </Link>
+               <Link href={"/cart"} className="font-semibold text-white text-lg" onClick={e=>toggleNavPhone()}>
+                  Carrello
                </Link>
             </div>
          </nav>

@@ -1,6 +1,8 @@
 "use server"
 
+import { revalidatePath } from "next/cache"
 import { formContact } from "./schemas"
+import { cookies } from 'next/headers'
 
 type Product = {
    id: string
@@ -27,6 +29,7 @@ export async function getProducts(take?:number, category?:string) {
       const data: Product[] = await res.json()
       return data
    } catch (error) {
+      console.log(error);
       return [] as Product[]
    }
 }
@@ -38,6 +41,7 @@ export async function getProduct(slug:string) {
       const data: Product = await res.json()
       return data
    } catch (error) {
+      console.log(error);
       return null
    }
 }
@@ -49,6 +53,7 @@ export async function searchProducts(query:string) {
       const data: Product[] = await res.json()
       return data
    } catch (error) {
+      console.log(error);
       return [] as Product[]
    }
 }
@@ -60,6 +65,7 @@ export async function getCategories() {
       const data: string[] = await res.json()
       return data
    } catch (error) {
+      console.log(error);
       return []
    }
 }
@@ -83,5 +89,120 @@ export async function sendContactMessage(values:any){
    } catch (error) {
       console.log(error);
       return false
+   }
+}
+
+export async function getCart(){
+   try {
+      const cartId = cookies().get("cart")?.value
+      if (!cartId) {
+         return null;
+      }
+      const res = await fetch(`http://localhost:3550/api/cart`, { 
+         cache: "no-cache",
+         headers: {
+            "Content-Type": "application/json",
+            "cartId": cartId
+         }
+      })
+      if (res.status != 200) return null
+      const data = await res.json()
+      return data
+   } catch (error) {
+      console.log(error);
+      return null
+   }
+}
+
+export async function addToCart(slug:string){
+   try {
+      /* if (cookies().get("cart")?.value) {
+         const res = await createCart()
+         if (!res) return false
+      }
+      const cartId = cookies().get("cart")?.value */
+      const res = await fetch(`http://localhost:3550/api/cart/add`, { 
+         cache: "no-cache",
+         headers: {
+            "Content-Type": "application/json"
+         },
+         method: "POST",
+         body: JSON.stringify({
+            cartId: cookies().get("cart")?.value,
+            slug: slug
+         }),
+      })
+      if (res.status > 299) return res.status
+      const data = await res.json()
+      cookies().set("cart", data.cartId, { expires: Date.now() + 60 * 60 * 24 * 3 })
+      return res.status
+   } catch (error) {
+      console.log(error);
+      return 500
+   }
+}
+
+export async function removeFromCart(slug:string){
+   try {
+      const cartId = cookies().get("cart")?.value
+      if (!cartId) {
+         return false;
+      }
+      const res = await fetch(`http://localhost:3550/api/cart/remove`, { 
+         cache: "no-cache",
+         headers: {
+            "Content-Type": "application/json",
+            "cartId": cartId,
+            "slug": slug
+         },
+         method: "DELETE",
+      })
+      if (res.status > 299) false
+      return true
+   } catch (error) {
+      console.log(error);
+      return false
+   }
+}
+
+export async function createCart() {
+   try {
+      const res = await fetch(`http://localhost:3550/api/cart/create`, {
+         method: "POST",
+         headers: {
+            "Content-Type": "application/json"
+         },
+         cache: "no-cache",
+      })
+      if (res.status != 201) return false
+      const data = await res.json()
+      cookies().set("cart", data.cartId, { expires: Date.now() + 60 * 60 * 24 * 3 })
+      return true
+   } catch (error) {
+      console.log(error);
+      return false
+   }
+}
+
+export async function getCartProductsNumber(){
+   try {
+      const cartId = cookies().get("cart")?.value
+      if (!cartId) {
+         console.log("No cartId");
+         return -2;
+      }
+      const res = await fetch(`http://localhost:3550/api/cart/number`, { 
+         cache: "no-cache",
+         headers: {
+            "Content-Type": "application/json",
+            "cartId": cartId
+         }
+      })
+      if (res.status != 200) return -1
+      const data = await res.json()
+      return data.number
+   } catch (error) {
+      console.log(error);
+      return -1
    }
 }
