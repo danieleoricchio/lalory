@@ -2,6 +2,7 @@
 
 import { getCartProductsNumber } from "@/lib/funcs"
 import { cn } from "@/lib/utils"
+import { useQuery } from "@tanstack/react-query"
 import { Menu, Search, ShoppingCart, X } from "lucide-react"
 import Link from "next/link"
 import { useEffect, useState } from "react"
@@ -11,13 +12,12 @@ type Props = {
 }
 
 export default function Page({}: Props) {
-   //TODO: usare react-query 
-   const [numberProducts, setNumberProducts] = useState(0)
+   const { data: numberProducts } = useQuery({
+      queryFn: () => getCartProductsNumber(),
+      refetchInterval: 1000,
+      queryKey: ["cartProductsNumber"]
+   })
    const uguale = "bg-primary transition-all duration-300"
-
-   async function numero(){
-      setNumberProducts(await getCartProductsNumber())
-   }
 
    useEffect(() => {
       window.addEventListener("scroll", () => {
@@ -25,23 +25,26 @@ export default function Page({}: Props) {
          
          if (nav) {
             const homediv = document.getElementById("homenav")
+            const cartnav = document.getElementById("cartnav")
             
-            if (!homediv) return
+            if (!homediv || !cartnav) return
             if (window.scrollY > 120) {
                document.getElementById("divhomenav")?.classList.remove("py-7")
                document.getElementById("divhomenav")?.classList.add("py-2")
                homediv.classList.remove("text-3xl")
                homediv.classList.add("text-xl")
+               cartnav.classList.remove("top-8")
+               cartnav.classList.add("top-4")
             } else {
                document.getElementById("divhomenav")?.classList.remove("py-2")
                document.getElementById("divhomenav")?.classList.add("py-7")
                homediv.classList.remove("text-xl")
                homediv.classList.add("text-3xl")
+               cartnav.classList.remove("top-4")
+               cartnav.classList.add("top-8")
             }
          }
       })
-
-      numero()
 
       return () => {
          window.removeEventListener("scroll", () => {})
@@ -62,13 +65,13 @@ export default function Page({}: Props) {
                <Link href={"/"} id="homenav">
                   Home
                </Link>
-               <div className="absolute top-8 right-8">
+               <div className="absolute top-8 right-8 transition-all" id="cartnav">
                   <Link href={"/cart"} className="flex gap-2 items-center">
                      <ShoppingCart className="text-3xl"/>
                      {
-                        /* numberProducts < 1 ? null : (
+                        !numberProducts || numberProducts < 1 ? null : (
                            <span className="text-xl">{numberProducts}</span>
-                        ) */
+                        )
                      }
                   </Link>
                </div>
@@ -111,6 +114,11 @@ export default function Page({}: Props) {
                </Link>
                <Link href={"/cart"} className="font-semibold text-white text-lg" onClick={e=>toggleNavPhone()}>
                   Carrello
+                  { 
+                     !numberProducts || numberProducts < 1 ? null : (
+                        <>{` (${numberProducts})`}</>
+                     )
+                  }
                </Link>
             </div>
          </nav>

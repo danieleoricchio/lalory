@@ -2,7 +2,9 @@ import { getProduct } from "@/lib/funcs"
 import { notFound } from "next/navigation"
 import Immagini from "./immagini"
 import Products from "@/components/products"
+import LoadingSpin from "@/components/loadingspin"
 import AggiungiAlCarrello from "./aggiungialcarrello"
+import { Suspense } from "react"
 
 type Props = {
    params: {
@@ -29,7 +31,9 @@ export default async function Page({params}: Props) {
       </div>
       <div className="px-8 lg:px-0">
          <h2 className="text-center font-bold text-2xl mb-4 mt-4 lg:mt-2">Prodotti correlati</h2>
-         <Products take={3} category={product.category} classNamesTitolo="font-medium text-base" classNamesPrezzo="text-sm"/>
+         <Suspense fallback={<LoadingSpin />}>
+            <Products take={3} category={product.category} classNamesTitolo="font-medium text-base max-sm:text-sm" classNamesPrezzo="text-sm"/>
+         </Suspense>
       </div>
       </>
    )

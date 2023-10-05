@@ -1,6 +1,8 @@
 import { searchProducts } from "@/lib/funcs"
 import SearchBar from "./searchbar"
 import Products from "@/components/products"
+import LoadingSpin from "@/components/loadingspin"
+import { Suspense } from "react"
 
 type Props = {
    searchParams: {
@@ -28,7 +30,9 @@ export default async function Page({searchParams}: Props) {
                   </div>
                ) : (
                   <div className="mt-4">
-                     <Products products={products} classNamesGrid="grid-cols-2 max-sm:px-0 lg:grid-cols-3"/>
+                     <Suspense fallback={<LoadingSpin />}>
+                        <Products products={products} classNamesGrid="grid-cols-2 max-sm:px-0 lg:grid-cols-3"/>
+                     </Suspense>
                   </div>
                )
             }

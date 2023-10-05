@@ -33,7 +33,7 @@ export default async function Page({take, category, classNamesPrezzo, classNames
                         <div className={cn("relative w-full aspect-[9/12] shadow-sm rounded overflow-hidden group mx-auto", classNamesImage)}>
                            <Image alt={product.name} src={product.images[0]} fill className="object-cover group-hover:scale-105 transition-all duration-200" priority/>
                         </div>
-                        <h2 className={cn("xl:font-medium text-center lg:text-xl xl:text-2xl pt-2", classNamesTitolo)}>{product.name}</h2>
+                        <h2 className={cn("xl:font-medium text-center lg:text-xl xl:text-2xl pt-2 line-clamp-2", classNamesTitolo)}>{product.name}</h2>
                         <p className={cn("text-center xl:font-normal lg:text-base text-sm font-light", classNamesPrezzo)}>{(product.price as number).toFixed(2)}€</p>
                      </Link>
                   </>

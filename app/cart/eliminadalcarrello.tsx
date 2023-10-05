@@ -31,7 +31,7 @@ export default function Page({slug}: Props) {
       }
    }
    return (
-      <button onClick={click} disabled={loading} className="bg-red-500 text-white px-2 py-1 rounded-md mt-2 lg:mt-4 text-base">
+      <button onClick={click} disabled={loading} className=" text-red-500 mt-2 text-base">
          {
             loading ? <Loader2 className="animate-spin lg:h-5 h-4"/> : <Trash2 className="lg:h-5 h-4"/>
          }

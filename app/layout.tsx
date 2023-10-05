@@ -1,12 +1,12 @@
 import { cn } from "@/lib/utils";
 import "./globals.css";
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { Bitter as Font } from "next/font/google";
 import Navbar from "@/components/navbar";
 import Footer from "@/components/footer";
 import Providers from "@/components/providers";
 
-const inter = Inter({ subsets: ["latin"] });
+const font = Font({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
    title: "LaLory",
@@ -20,7 +20,7 @@ export default function RootLayout({
 }) {
    return (
       <html lang="it">
-         <body className={cn(inter.className, "bg-gray-100")}>
+         <body className={cn(font.className, "bg-gray-100")}>
             <Providers>
                <Navbar />
                <main className="lg:w-2/3 mx-auto lg:pt-[160px] pb-8 bg-white">

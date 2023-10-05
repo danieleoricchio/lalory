@@ -1,6 +1,7 @@
 "use client"
 
 import { addToCart } from "@/lib/funcs"
+import { useQueryClient } from "@tanstack/react-query"
 import { Loader2 } from "lucide-react"
 import { useRouter } from "next/navigation"
 import { useState } from "react"
@@ -12,6 +13,7 @@ type Props = {
 
 export default function Page({slug}: Props) {
    const [loading, setLoading] = useState(false)
+   const { invalidateQueries } = useQueryClient()
    //const router = useRouter()
 
    async function Aggiungi(){
@@ -20,6 +22,7 @@ export default function Page({slug}: Props) {
          const status = await addToCart(slug)
          if (status == 201) {
             toast.success('Prodotto aggiunto al carrello')
+            //invalidateQueries(["cartProductsNumber"])
             //router.refresh()
          } else if (status == 200) {
             toast('Prodotto gia aggiunto al carrello', {

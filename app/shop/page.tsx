@@ -1,7 +1,9 @@
 import Products from "@/components/products"
+import LoadingSpin from "@/components/loadingspin"
 import { getCategories } from "@/lib/funcs"
 import { cn } from "@/lib/utils"
 import Link from "next/link"
+import { Suspense } from "react"
 
 type Props = {
    searchParams: {
@@ -26,7 +28,9 @@ export default async function Page({searchParams}: Props) {
                ))
             }
          </div>
-         <Products category={searchParams.category} classNamesGrid="grid-cols-2 lg:grid-cols-3"/>
+         <Suspense fallback={<LoadingSpin />}>
+            <Products category={searchParams.category} classNamesGrid="grid-cols-2 lg:grid-cols-3"/>
+         </Suspense>
          <div className="h-[33vh]"/>
       </div>
    )

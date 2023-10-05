@@ -1,6 +1,5 @@
 "use server"
 
-import { revalidatePath } from "next/cache"
 import { formContact } from "./schemas"
 import { cookies } from 'next/headers'
 
@@ -14,9 +13,11 @@ type Product = {
    slug: string
 }
 
+if (!process.env.BACKEND_URL || process.env.BACKEND_URL.trim() == "") throw new Error("BACKEND_URL env variable not set")
+
 export async function getProducts(take?:number, category?:string) {
    try {
-      let url = "http://localhost:3550/api/products"
+      let url = `${process.env.BACKEND_URL}/api/products`
       if (take && !category) {
          url += `?take=${take}`
       } else if (!take && category) {
@@ -36,7 +37,19 @@ export async function getProducts(take?:number, category?:string) {
 
 export async function getProduct(slug:string) {
    try {
-      const res = await fetch(`http://localhost:3550/api/product/${slug}`, { next: { tags: ["product"] } })
+      const res = await fetch(`${process.env.BACKEND_URL}/api/product/${slug}`, { next: { tags: ["product"] } })
+      if (res.status === 404) return null
+      const data: Product = await res.json()
+      return data
+   } catch (error) {
+      console.log(error);
+      return null
+   }
+}
+
+export async function getCoverProduct() {
+   try {
+      const res = await fetch(`${process.env.BACKEND_URL}/api/cover`, { next: { tags: ["cover"] } })
       if (res.status === 404) return null
       const data: Product = await res.json()
       return data
@@ -48,7 +61,7 @@ export async function getProduct(slug:string) {
 
 export async function searchProducts(query:string) {
    try {
-      const res = await fetch(`http://localhost:3550/api/search/${query}`, { next: { tags: ["products"] } })
+      const res = await fetch(`${process.env.BACKEND_URL}/api/search/${query}`, { next: { tags: ["products"] } })
       if (res.status != 200) return [] as Product[]
       const data: Product[] = await res.json()
       return data
@@ -60,7 +73,7 @@ export async function searchProducts(query:string) {
 
 export async function getCategories() {
    try {
-      const res = await fetch(`http://localhost:3550/api/categories`, { next: { tags: ["categories"] } })
+      const res = await fetch(`${process.env.BACKEND_URL}/api/categories`, { next: { tags: ["categories"] } })
       if (res.status != 200) return []
       const data: string[] = await res.json()
       return data
@@ -73,7 +86,7 @@ export async function getCategories() {
 export async function sendContactMessage(values:any){
    try {
       const realValues = formContact.parse(values)
-      const res = await fetch(`http://localhost:3550/api/contact`, {
+      const res = await fetch(`${process.env.BACKEND_URL}/api/contact`, {
          method: "POST",
          headers: {
             "Content-Type": "application/json"
@@ -98,7 +111,7 @@ export async function getCart(){
       if (!cartId) {
          return null;
       }
-      const res = await fetch(`http://localhost:3550/api/cart`, { 
+      const res = await fetch(`${process.env.BACKEND_URL}/api/cart`, { 
          cache: "no-cache",
          headers: {
             "Content-Type": "application/json",
@@ -121,7 +134,7 @@ export async function addToCart(slug:string){
          if (!res) return false
       }
       const cartId = cookies().get("cart")?.value */
-      const res = await fetch(`http://localhost:3550/api/cart/add`, { 
+      const res = await fetch(`${process.env.BACKEND_URL}/api/cart/add`, { 
          cache: "no-cache",
          headers: {
             "Content-Type": "application/json"
@@ -148,7 +161,7 @@ export async function removeFromCart(slug:string){
       if (!cartId) {
          return false;
       }
-      const res = await fetch(`http://localhost:3550/api/cart/remove`, { 
+      const res = await fetch(`${process.env.BACKEND_URL}/api/cart/remove`, { 
          cache: "no-cache",
          headers: {
             "Content-Type": "application/json",
@@ -167,7 +180,7 @@ export async function removeFromCart(slug:string){
 
 export async function createCart() {
    try {
-      const res = await fetch(`http://localhost:3550/api/cart/create`, {
+      const res = await fetch(`${process.env.BACKEND_URL}/api/cart/create`, {
          method: "POST",
          headers: {
             "Content-Type": "application/json"
@@ -188,10 +201,9 @@ export async function getCartProductsNumber(){
    try {
       const cartId = cookies().get("cart")?.value
       if (!cartId) {
-         console.log("No cartId");
          return -2;
       }
-      const res = await fetch(`http://localhost:3550/api/cart/number`, { 
+      const res = await fetch(`${process.env.BACKEND_URL}/api/cart/number`, { 
          cache: "no-cache",
          headers: {
             "Content-Type": "application/json",
@@ -200,9 +212,48 @@ export async function getCartProductsNumber(){
       })
       if (res.status != 200) return -1
       const data = await res.json()
-      return data.number
+      return data.number as number
    } catch (error) {
       console.log(error);
       return -1
+   }
+}
+
+type CheckoutResponse = {
+   status: false
+} | {
+   status: true;
+   url: string
+}
+export async function checkout(): Promise<CheckoutResponse> {
+   try {
+      const cartId = cookies().get("cart")?.value
+      if (!cartId) {
+         return {
+            status: false
+         };
+      }
+      const res = await fetch(`${process.env.BACKEND_URL}/api/cart/checkout`, {
+         method: "POST",
+         headers: {
+            "Content-Type": "application/json",
+            "cartId": cartId
+         },
+         cache: "no-cache"
+      })
+      if (res.status != 200) return {
+         status: false
+      };
+      const data = await res.json()
+      cookies().set("cart", "")
+      return {
+         status: true,
+         url: data.url
+      }
+   } catch (error) {
+      console.log(error);
+      return {
+         status: false
+      };
    }
 }
