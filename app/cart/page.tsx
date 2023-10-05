@@ -11,6 +11,8 @@ type Props = {
    
 }
 
+export const dynamic = 'force-dynamic'
+
 export default async function Page({}: Props) {
    const cart = await getCart()
    if (!cart) {
