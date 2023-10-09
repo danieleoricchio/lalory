@@ -17,7 +17,7 @@ export default async function Page({params}: Props) {
    if (!product) return notFound()
    return (
       <>
-      <div className="lg:grid grid-cols-2 gap-8 px-8 lg:px-[50px] xl:px-[100px] pt-4 lg:pt-0 lg:mt-4">
+      <div className="lg:grid grid-cols-2 gap-8 px-8 lg:px-[50px] xl:px-[100px] md:px-[60px] pt-4 lg:pt-0 lg:mt-4">
          <div>
             <h1 className="font-semibold text-3xl lg:hidden pb-4">{product.name}</h1>
             <Immagini product={product}/>

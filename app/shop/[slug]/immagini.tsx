@@ -12,13 +12,13 @@ type Props = {
 export default function Page({product}: Props) {
    const [current, setCurrent] = useState(0)
    return (
-      <div>
-         <Link className="cursor-pointer" href={product.images[current]}>
+      <div className="md:flex lg:block">
+         <Link className="cursor-pointer w-2/3" href={product.images[current]}>
             <div className="xl:aspect-square lg:aspect-[9/12] aspect-square shadow w-full relative rounded overflow-hidden">
                <Image alt={product.name} src={product.images[current]} fill className="object-cover" priority />
             </div>
          </Link>
-         <div className="mt-4 grid grid-cols-4 xl:grid-cols-6 w-full px-4">
+         <div className="mt-4 grid grid-cols-4 xl:grid-cols-6 w-full md:w-1/3 lg:w-full px-4">
             {
                product.images.map((image:string, index:number) => {
                   return (
