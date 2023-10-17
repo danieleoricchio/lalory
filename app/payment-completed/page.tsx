@@ -1,12 +1,18 @@
 import Products from "@/components/products"
 import { Suspense } from "react"
 import LoadingSpin from "@/components/loadingspin"
+import type { Metadata } from "next"
 
 type Props = {
    searchParams: {
       success: number
    }
 }
+
+export const metadata: Metadata = {
+   title: "Payment Completed",
+   description: "LaLory E-Commerce",
+};
 
 export default function Page({searchParams}: Props) {
    const success = searchParams.success == 1

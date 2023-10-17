@@ -5,11 +5,7 @@ import { Suspense } from "react"
 import LoadingSpin from "@/components/loadingspin"
 import Cover from "@/components/cover"
 
-type Props = {
-   
-}
-
-export default function Page({}: Props) {
+export default function Page() {
    return (
       <div>
          <Suspense fallback={<LoadingSpin />}>
@@ -21,8 +17,8 @@ export default function Page({}: Props) {
          </Suspense>
          <div className="bg-primary text-center text-white text-sm lg:text-base font-light py-4 px-6 lg:py-6 lg:px-12 space-y-4 lg:space-y-8 mt-6">
             <h2 className="text-2xl font-bold">Riguardo me stessa</h2>
-            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Magni repellendus quo sed fuga consequatur ipsa corporis eligendi, fugiat odit voluptas molestias vitae sapiente aut, totam consequuntur error eius asperiores ipsum.</p>
-            <p className="hover:underline font-medium"><Link href="/chi-siamo">Leggi di piu riguardo a quello che faccio <ChevronsRight className="text-white inline-block lg:-mt-1" size={20}/></Link></p>
+            <p>LaLory è il luogo in cui condivido la mia passione per il cucito del guardaroba dei miei sogni, ispirato al prêt-à-porter di lusso. Attraverso modelli di cucito esclusivi e attenti ai dettagli, il mio obiettivo è aiutarti a creare bellissimi vestiti che amerai per sempre.</p>
+            <p className="hover:underline font-medium"><Link href="/about">Leggi di piu riguardo a quello che faccio <ChevronsRight className="text-white inline-block lg:-mt-1" size={20}/></Link></p>
          </div>
          <div className="text-center text-sm lg:text-base font-light py-4 px-6 lg:py-6 lg:px-12 space-y-4 lg:space-y-8 mt-4">
             <h2 className="text-2xl font-bold">Stiamo in contatto!</h2>

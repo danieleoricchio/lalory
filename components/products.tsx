@@ -10,10 +10,11 @@ type Props = {
    classNamesPrezzo?: string
    classNamesGrid?: string,
    classNamesImage?: string,
-   products?: any
+   products?: any,
+   orderBy?: string
 }
 
-export default async function Page({take, category, classNamesPrezzo, classNamesTitolo, classNamesGrid, products, classNamesImage}: Props) {
+export default async function Page({take, category, classNamesPrezzo, classNamesTitolo, classNamesGrid, products, classNamesImage, orderBy}: Props) {
    let data;
    if (!products) {
       data = await getProducts(take, category)
@@ -22,6 +23,35 @@ export default async function Page({take, category, classNamesPrezzo, classNames
             Nessun prodotto trovato
          </div>
       )
+      if (orderBy) {
+         data.sort((a, b) => {
+            if (orderBy == "nameCr") {
+               if (a.name.toLowerCase() < b.name.toLowerCase()) return -1
+               else if (a.name.toLowerCase() > b.name.toLowerCase()) return 1
+               else return 0
+            } else if (orderBy == "nameDe") {
+               if (a.name.toLowerCase() < b.name.toLowerCase()) return 1
+               else if (a.name.toLowerCase() > b.name.toLowerCase()) return -1
+               else return 0
+            } else if (orderBy == "priceCr") {
+               if (a.price < b.price) return -1
+               else if (a.price > b.price) return 1
+               else return 0
+            } else if (orderBy == "priceDe") {
+               if (a.price < b.price) return 1
+               else if (a.price > b.price) return -1
+               else return 0
+            } else if (orderBy == "updatedAtCr") {
+               if (a.updatedAt < b.updatedAt) return -1
+               else if (a.updatedAt > b.updatedAt) return 1
+               else return 0
+            } else if (orderBy == "updatedAtDe") {
+               if (a.updatedAt < b.updatedAt) return 1
+               else if (a.updatedAt > b.updatedAt) return -1
+               else return 0
+            } else return 0
+         })
+      }
    } else {data = products}
    return (
       <div className={cn("grid grid-cols-3 gap-6 px-8 lg:px-[50px] xl:px-[100px]", classNamesGrid)}>

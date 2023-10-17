@@ -6,16 +6,18 @@ import Products from "@/components/products"
 import LoadingSpin from "@/components/loadingspin"
 import Checkout from "./checkout"
 import { Suspense } from "react"
+import type { Metadata } from "next"
 
-type Props = {
-   
-}
+export const metadata: Metadata = {
+   title: "Carrello",
+   description: "Your cart",
+};
 
 export const dynamic = 'force-dynamic'
 
-export default async function Page({}: Props) {
+export default async function Page() {
    const cart = await getCart()
-   if (!cart) {
+   if (!cart || cart.products.length === 0) {
       return (
          <div className="lg:p-12 p-4">
             <h1 className="text-3xl font-semibold">Carrello</h1>

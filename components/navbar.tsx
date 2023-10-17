@@ -12,17 +12,20 @@ type Props = {
 }
 
 export default function Page({}: Props) {
-   const { data: numberProducts } = useQuery({
-      queryFn: () => getCartProductsNumber(),
-      refetchInterval: 1000,
-      queryKey: ["cartProductsNumber"]
+   const { data: numberProducts, isError } = useQuery({
+      queryKey: ["cartProductsNumber"],
+      queryFn: async () => {
+         const number = await getCartProductsNumber()
+         console.log(number);
+         return number
+      },
+      refetchInterval: 1500,
    })
    const uguale = "bg-primary transition-all duration-300"
 
    useEffect(() => {
       window.addEventListener("scroll", () => {
          const nav = document.getElementById("nav1")
-         
          if (nav) {
             const homediv = document.getElementById("homenav")
             const cartnav = document.getElementById("cartnav")
@@ -83,7 +86,7 @@ export default function Page({}: Props) {
                <Link href={"/contact"} className="hover:text-white/80 transition-all duration-200  ">
                   Contatti
                </Link>
-               <Link href={"/chi-siamo"} className="hover:text-white/80 transition-all duration-200  ">
+               <Link href={"/about"} className="hover:text-white/80 transition-all duration-200  ">
                   Chi siamo
                </Link>
                <Link href={"/search"} className="hover:text-white/80 transition-all duration-200  ">
@@ -96,9 +99,16 @@ export default function Page({}: Props) {
             <Link href={"/"} className="font-semibold">
                Home
             </Link>
-            <Link href={"/search"}>
-               <Search />
-            </Link>
+            <div className="relative flex items-center justify-center">
+               <Link href={"/cart"}>
+                  <ShoppingCart className="text-3xl"/>
+                  {numberProducts && numberProducts > 0 ? (
+                     <div className="absolute right-0 top-0 flex justify-center items-center -mr-2 -mt-2 h-4 w-4 rounded-full bg-white text-[11px] font-medium text-black shadow">
+                        {numberProducts}
+                     </div>
+                  ) : null}
+               </Link>
+            </div>
          </nav>
          <nav className="fixed bg-primary left-0 top-0 h-full z-20 transition-all duration-300 overflow-hidden" style={{width: "0px"}} id="navphone">
             <X onClick={e=>toggleNavPhone()} className="absolute right-4 top-4 text-white cursor-pointer"/>
@@ -109,16 +119,11 @@ export default function Page({}: Props) {
                <Link href={"/contact"} className="font-semibold text-white text-lg" onClick={e=>toggleNavPhone()}>
                   Contatti
                </Link>
-               <Link href={"/chi-siamo"} className="font-semibold text-white text-lg" onClick={e=>toggleNavPhone()}>
+               <Link href={"/about"} className="font-semibold text-white text-lg" onClick={e=>toggleNavPhone()}>
                   Chi siamo
                </Link>
-               <Link href={"/cart"} className="font-semibold text-white text-lg" onClick={e=>toggleNavPhone()}>
-                  Carrello
-                  { 
-                     !numberProducts || numberProducts < 1 ? null : (
-                        <>{` (${numberProducts})`}</>
-                     )
-                  }
+               <Link href={"/search"} className="font-semibold text-white text-lg" onClick={e=>toggleNavPhone()}>
+                  Cerca
                </Link>
             </div>
          </nav>

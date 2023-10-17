@@ -3,12 +3,18 @@ import SearchBar from "./searchbar"
 import Products from "@/components/products"
 import LoadingSpin from "@/components/loadingspin"
 import { Suspense } from "react"
+import type { Metadata } from "next"
 
 type Props = {
    searchParams: {
       q: string
    }
 }
+
+export const metadata: Metadata = {
+   title: "Shop",
+   description: "Shop of LaLory E-Commerce",
+};
 
 export default async function Page({searchParams}: Props) {
    let products: any[] = []

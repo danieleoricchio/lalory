@@ -1,5 +1,6 @@
 "use server"
 
+import { revalidateTag } from "next/cache"
 import { formContact } from "./schemas"
 import { cookies } from 'next/headers'
 
@@ -15,6 +16,11 @@ type Product = {
 
 if (!process.env.BACKEND_URL || process.env.BACKEND_URL.trim() == "") throw new Error("BACKEND_URL env variable not set")
 
+type ProductExtended = Product & {
+   createdAt: Date
+   updatedAt: Date
+   isCover: boolean
+}
 export async function getProducts(take?:number, category?:string) {
    try {
       let url = `${process.env.BACKEND_URL}/api/products`
@@ -26,12 +32,12 @@ export async function getProducts(take?:number, category?:string) {
          url += `?take=${take}&category=${category}`
       }
       const res = await fetch(url, { next: { tags: ['products'] } })
-      if (res.status != 200) return [] as Product[]
-      const data: Product[] = await res.json()
+      if (res.status != 200) return [] as ProductExtended[]
+      const data: ProductExtended[] = await res.json()
       return data
    } catch (error) {
       console.log(error);
-      return [] as Product[]
+      return [] as ProductExtended[]
    }
 }
 
@@ -148,6 +154,7 @@ export async function addToCart(slug:string){
       if (res.status > 299) return res.status
       const data = await res.json()
       cookies().set("cart", data.cartId, { expires: Date.now() + 60 * 60 * 24 * 3 })
+      revalidateTag("product")
       return res.status
    } catch (error) {
       console.log(error);

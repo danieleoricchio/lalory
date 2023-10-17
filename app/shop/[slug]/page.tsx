@@ -5,12 +5,33 @@ import Products from "@/components/products"
 import LoadingSpin from "@/components/loadingspin"
 import AggiungiAlCarrello from "./aggiungialcarrello"
 import { Suspense } from "react"
+import type { Metadata } from "next"
 
 type Props = {
    params: {
       slug: string
    }
 }
+
+export async function generateMetadata({ params }: Props ): Promise<Metadata> {
+   const product = await getProduct(params.slug)
+   if (!product) return notFound()
+   
+
+  
+   return {
+      title: product.name,
+      keywords: [product.name, product.category, product.description],
+      description: product.description,
+      creator: "LaLory E-Commerce",
+      openGraph: {
+         title: product.name,
+         description: product.description,
+         url: `https://lalory.vercel.app/shop/${params.slug}`,
+         images: [...product.images],
+      },
+   };
+ }
 
 export default async function Page({params}: Props) {
    const product = await getProduct(params.slug)

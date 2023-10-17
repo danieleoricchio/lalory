@@ -9,8 +9,12 @@ import Providers from "@/components/providers";
 const font = Font({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-   title: "LaLory",
+   title: {
+      absolute: "LaLory E-Commerce",
+      template: "%s | LaLory E-Commerce",
+   },
    description: "LaLory E-Commerce",
+   robots: "follow, index",
 };
 
 export default function RootLayout({
