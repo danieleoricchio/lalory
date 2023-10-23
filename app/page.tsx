@@ -4,12 +4,8 @@ import Link from "next/link"
 import { Suspense } from "react"
 import LoadingSpin from "@/components/loadingspin"
 import Cover from "@/components/cover"
-import { revalidateTag } from "next/cache"
 
 export default function Page() {
-   revalidateTag("products")
-   revalidateTag("cover")
-   revalidateTag("categories")
    return (
       <div>
          <Suspense fallback={<LoadingSpin />}>
