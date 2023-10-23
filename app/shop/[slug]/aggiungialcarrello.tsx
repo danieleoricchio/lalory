@@ -1,7 +1,8 @@
 "use client"
 
+import { useCartProducts } from "@/components/cartcontext"
 import { addToCart } from "@/lib/funcs"
-import { useQueryClient, useMutation } from "@tanstack/react-query"
+//import { useQueryClient, useMutation } from "@tanstack/react-query"
 import { Loader2 } from "lucide-react"
 import Link from "next/link"
 import { useState } from "react"
@@ -13,35 +14,27 @@ type Props = {
 }
 
 export default function Page({slug}: Props) {
+   const { increment } = useCartProducts()
    const [loading, setLoading] = useState(false)
    const [showLink, setShowLink] = useState(false)
-   //const queryClient = useQueryClient()
-   //const router = useRouter()
-
-   const mutation = useMutation({
-      mutationFn: addToCart,
-      onSuccess: async(status) => {
-         if (status == 201) {
-         toast.success('Prodotto aggiunto al carrello')
-         setShowLink(true)
-         //await queryClient.refetchQueries({ queryKey: ["cartProductsNumber"]})
-         } else if (status == 200) {
-            toast('Prodotto gia aggiunto al carrello', {
-               icon: '❌',
-            });
-         } else {
-            toast.error('Impossibile aggiungere il prodotto al carrello')
-         }
-      },
-      onError: () => {
-         toast.error('Errore durante l\'aggiunta al carrello')
-      }
-   })
 
    async function Aggiungi(){
       try {
          setLoading(true)
-         mutation.mutate(slug)
+         const id = toast.loading("Sto aggiungendo al carrello...")
+         const status = await addToCart(slug)
+         if (status == 201) {
+            toast.success('Prodotto aggiunto al carrello', {id})
+            increment()
+            setShowLink(true)
+         } else if (status == 200) {
+            toast('Prodotto gia aggiunto al carrello', {
+               icon: '❌',
+               id
+            });
+         } else {
+            toast.error('Impossibile aggiungere il prodotto al carrello', {id})
+         }
       } catch (error) {
          console.log(error);
       } finally {

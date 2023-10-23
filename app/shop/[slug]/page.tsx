@@ -16,8 +16,6 @@ type Props = {
 export async function generateMetadata({ params }: Props ): Promise<Metadata> {
    const product = await getProduct(params.slug)
    if (!product) return notFound()
-   
-
   
    return {
       title: product.name,
@@ -53,7 +51,7 @@ export default async function Page({params}: Props) {
       <div className="px-8 lg:px-0">
          <h2 className="text-center font-bold text-2xl mb-4 mt-4 lg:mt-2">Prodotti correlati</h2>
          <Suspense fallback={<LoadingSpin />}>
-            <Products take={3} category={product.category} classNamesTitolo="font-medium text-base max-sm:text-sm" classNamesPrezzo="text-sm"/>
+            <Products take={3} category={product.category} classNamesTitolo="font-medium text-base max-sm:text-sm" classNamesPrezzo="text-sm" exceptFor={{slug:params.slug}}/>
          </Suspense>
       </div>
       </>

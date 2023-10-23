@@ -6,21 +6,15 @@ import { useQuery } from "@tanstack/react-query"
 import { Menu, Search, ShoppingCart, X } from "lucide-react"
 import Link from "next/link"
 import { useEffect, useState } from "react"
+import { useCartProducts } from "./cartcontext"
 
 type Props = {
    
 }
 
 export default function Page({}: Props) {
-   const { data: numberProducts, isError } = useQuery({
-      queryKey: ["cartProductsNumber"],
-      queryFn: async () => {
-         const number = await getCartProductsNumber()
-         console.log(number);
-         return number
-      },
-      refetchInterval: 1500,
-   })
+   const { numberOfProducts } = useCartProducts()
+   console.log(numberOfProducts);
    const uguale = "bg-primary transition-all duration-300"
 
    useEffect(() => {
@@ -72,8 +66,8 @@ export default function Page({}: Props) {
                   <Link href={"/cart"} className="flex gap-2 items-center">
                      <ShoppingCart className="text-3xl"/>
                      {
-                        !numberProducts || numberProducts < 1 ? null : (
-                           <span className="text-xl">{numberProducts}</span>
+                        numberOfProducts <= 0 ? null : (
+                           <span className="text-xl">{numberOfProducts}</span>
                         )
                      }
                   </Link>
@@ -102,9 +96,9 @@ export default function Page({}: Props) {
             <div className="relative flex items-center justify-center">
                <Link href={"/cart"}>
                   <ShoppingCart className="text-3xl"/>
-                  {numberProducts && numberProducts > 0 ? (
+                  {numberOfProducts > 0 ? (
                      <div className="absolute right-0 top-0 flex justify-center items-center -mr-2 -mt-2 h-4 w-4 rounded-full bg-white text-[11px] font-medium text-black shadow">
-                        {numberProducts}
+                        {numberOfProducts}
                      </div>
                   ) : null}
                </Link>

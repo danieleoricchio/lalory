@@ -1,7 +1,8 @@
 "use client"
 
+import { useCartProducts } from "@/components/cartcontext"
 import { removeFromCart } from "@/lib/funcs"
-import { useMutation, useQueryClient } from "@tanstack/react-query"
+//import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { Loader2, Trash2 } from "lucide-react"
 import { useRouter } from "next/navigation"
 import { useState } from "react"
@@ -13,27 +14,21 @@ type Props = {
 
 export default function Page({slug}: Props) {
    const [loading, setLoading] = useState(false)
-   const queryClient = useQueryClient()
+   const { decrement } = useCartProducts()
    const router = useRouter()
-   const mutation = useMutation({
-      mutationFn: removeFromCart,
-      onSuccess: async (status) => {
-         if (status) {
-            toast.success('Prodotto eliminato dal carrello')
-            //await queryClient.refetchQueries({ queryKey: ["cartProductsNumber"] })
-            router.refresh()
-         } else {
-            toast.error('Impossibile eliminare il prodotto dal carrello')
-         }
-      },
-      onError: () => {
-         toast.error('Errore durante l\'eliminazione dal carrello')
-      }
-   })
+
    async function click() {
       try {
          setLoading(true)
-         mutation.mutate(slug)
+         const id = toast.loading("Sto eliminando dal carrello...")
+         const status = await removeFromCart(slug)
+         if (status) {
+            toast.success('Prodotto eliminato dal carrello', {id})
+            decrement()
+            router.refresh()
+         } else {
+            toast.error('Impossibile eliminare il prodotto dal carrello', {id})
+         }
       } catch (error) {
          console.log(error);
       } finally {

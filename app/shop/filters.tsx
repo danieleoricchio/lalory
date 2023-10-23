@@ -42,7 +42,7 @@ export default function Page({categories, categoryFilter}: Props) {
 
    return (
       <>
-         <div className="hidden lg:block w-2/3 lg:w-1/4 mx-auto lg:pl-4 xl:w-[10%] xl:pl-8">
+         <div className="hidden lg:block w-2/3 lg:w-1/4 lg:pl-4 xl:w-[10%] xl:pl-8">
             <div className="flex justify-center items-center lg:flex-col lg:justify-start lg:items-start gap-4 flex-wrap mb-4 w-full">
                <span onClick={e=>replace({category: "All"})} className={cn("cursor-pointer px-4 py-2 text-left border-primary border-2 rounded text-primary font-semibold hover:max-sm:bg-primary hover:max-sm:text-white scale-95 hover:max-sm:scale-100 transition-all duration-300 lg:p-0 lg:border-0 lg:text-xl lg:uppercase lg:text-black lg:font-bold", categoryFilter == "" ? "bg-primary text-white lg:bg-white lg:text-primary" : "")} >
                   Tutti

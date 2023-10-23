@@ -153,7 +153,7 @@ export async function addToCart(slug:string){
       })
       if (res.status > 299) return res.status
       const data = await res.json()
-      cookies().set("cart", data.cartId, { expires: Date.now() + 60 * 60 * 24 * 3 })
+      cookies().set("cart", data.cartId, { expires: Date.now() + 60 * 60 * 24 * 3 * 10 })
       revalidateTag("product")
       return res.status
    } catch (error) {

@@ -11,10 +11,14 @@ type Props = {
    classNamesGrid?: string,
    classNamesImage?: string,
    products?: any,
-   orderBy?: string
+   orderBy?: string,
+   exceptFor?: {
+      category?: string,
+      slug?: string
+   }
 }
 
-export default async function Page({take, category, classNamesPrezzo, classNamesTitolo, classNamesGrid, products, classNamesImage, orderBy}: Props) {
+export default async function Page({take, category, classNamesPrezzo, classNamesTitolo, classNamesGrid, products, classNamesImage, orderBy, exceptFor}: Props) {
    let data;
    if (!products) {
       data = await getProducts(take, category)
@@ -51,6 +55,10 @@ export default async function Page({take, category, classNamesPrezzo, classNames
                else return 0
             } else return 0
          })
+      }
+      if (exceptFor) {
+         if (exceptFor.category) data = data.filter((product:any) => product.category != exceptFor.category)
+         if (exceptFor.slug) data = data.filter((product:any) => product.slug != exceptFor.slug)
       }
    } else {data = products}
    return (
